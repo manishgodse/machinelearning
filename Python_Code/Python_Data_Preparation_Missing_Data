@@ -3,23 +3,23 @@
 import pandas as pd
 
 # Get the file path
-sales_data = "/data/MonthlySales_MissingData.csv"
+data = "/data/MonthlySales_MissingData.csv"
 
 # Read the file and save as DataFrame
-sdf = pd.read_csv(sales_data, header=0)
-print('Original DataFrame of Input File\n',sdf)
+df = pd.read_csv(data, header=0)
+print('Original DataFrame of Input File\n',df)
 
 #--------------COUNT MISSING (OR NONE) DATA--------------
 
 # Get count of missing values
 print('\nCount of missing value in each column =')
-print(sdf.isnull().sum())
+print(df.isnull().sum())
 
 # Calculate count of missing values
-sum_NULL = sdf.isnull().sum()
+sum_NULL = df.isnull().sum()
 
 # Calculate % of missing values
-perc_NULL = (sum_NULL/sdf.isnull().count())*100
+perc_NULL = (sum_NULL/df.isnull().count())*100
 missing_data = pd.DataFrame({'Missing Data': sum_NULL,  '% Missing Data': perc_NULL})
 print('\n% of missing values = \n')
 print(missing_data)
@@ -27,17 +27,17 @@ print(missing_data)
 #--------------CALCULATE SKEWNESS & MEDIAN--------------
 
 # calculate sample skewness
-print('\nSkenwess = ',sdf['sales'].skew(skipna = True))
+print('\nSkenwess = ',df['sales'].skew(skipna = True))
 
 # Calculate median value
-med = sdf['sales'].median()
+med = df['sales'].median()
 print('\nMedian = ', med)
 
 #--------------REPLACE MISSING DATA--------------
 
 # Drop the rows where at least one element is missing.
-sdf['sales'] = sdf['sales'].fillna(med)
+df['sales'] = df['sales'].fillna(med)
 
 # Get the count of missing values in each column
 print('\nCount of missing value in each column =')
-print(sdf.isnull().sum())
+print(df.isnull().sum())
