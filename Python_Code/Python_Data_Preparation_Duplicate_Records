@@ -1,0 +1,35 @@
+#--------------READ FILE--------------
+# import pandas library
+import pandas as pd
+
+# Get the file path
+data = "/data/MonthlySales_DuplicateData.csv"
+
+# Read the file and save as DataFrame
+df = pd.read_csv(data, header=0)
+print('Original DataFrame of Input File\n',sdf)
+
+#--------------CHECK DUPLICATE RECORDS--------------
+
+# Get all duplicate rows based on all columns
+print('Duplicate records = ')
+print(df[df.duplicated()])
+
+# Get count of duplicate rows
+print('\nCount of duplicate records = ',df.duplicated().sum())
+
+# Get row count of data
+count_row = df.shape[0]
+print('\nNumber of records including duplicate records = ',count_row)
+
+#--------------REMOVE DUPLICATE RECORDS--------------
+
+# % of duplicate rows
+rec = 100*df.duplicated().sum()/count_row
+print('\nPercentage of duplicate records = ',rec)
+
+# Remove duplicate rows
+df.drop_duplicates(inplace=True)
+
+# Recheck duplicate rows
+print('\nRecheck count of duplicate records after removal of duplicate records = ',df.duplicated().sum())
