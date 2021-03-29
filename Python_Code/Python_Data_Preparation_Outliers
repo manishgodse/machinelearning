@@ -1,0 +1,83 @@
+#--------------READ FILE--------------
+# import pandas library
+import pandas as pd
+
+# Get the file path
+data = "E:/Courses/Machine_Learning_Python/data/MonthlySales_OutlierData.csv"
+
+# Read the file and save as DataFrame
+df = pd.read_csv(data, header=0)
+print('Original DataFrame of Input File\n',sdf)
+
+#--------------COUNT MISSING DATA--------------
+
+# Get count of missing values
+print('\nCount of missing value in each column =')
+print(df.isnull().sum())
+
+# Calculate count of missing values
+sum_NULL = df.isnull().sum()
+
+# Calculate % of missing values
+perc_NULL = (sum_NULL/sdf.isnull().count())*100
+missing_data = pd.DataFrame({'Missing Data': sum_NULL,  '% Missing Data': perc_NULL})
+print('\n% of missing values = \n')
+print(missing_data)
+
+#--------------CALCULATE SKEWNESS & MEDIAN--------------
+
+# calculate sample skewness
+print('\nSkenwess = ',df['sales'].skew(skipna = True))
+
+# Calculate median value
+med = df['sales'].median()
+print('\nMedian = ', med)
+
+#--------------REPLACE MISSING DATA--------------
+
+# Drop the rows where at least one element is missing.
+sdf['sales'] = df['sales'].fillna(med)
+
+# Get the count of missing values in each column
+print('\nCount of missing value in each column =')
+print(df.isnull().sum())
+
+#--------------RECALCULATE SKEWNESS--------------
+
+# calculate sample skewness
+print('\nSkenwess = ',df['sales'].skew(skipna = True))
+
+#--------------CALCULATE Z-SCORE FOR OUTLIER DETECTION--------------
+
+# Import numpy library
+import numpy as np
+
+# Import library to calculate z-score
+from scipy import stats
+
+# Calculate z-score
+z_scores = stats.zscore(df['sales'])
+
+# Get the absolute value of z-score
+abs_z = np.abs(z_scores)
+
+# Create dataframe of absolute value of z-score
+sp = pd.DataFrame(abs_z, columns=['z_score'])
+print('\nValues of z-score = \n',sp)
+
+# Print dataframe of outliers. Threshold value for outlies in above 3.
+print('\nOutlier data \n',sp[abs_z > 3])
+
+# Combine z-score data with original dataframe, and create new dataframe
+df_col = pd.concat([df,sp], axis=1)
+print('\nCombined dataframe \n',df_col)
+
+#--------------REPLACE OUTLIER WITH MEDIAN--------------
+
+# Z-score is the number of standard deviations the observation (or record)
+# above and below the mean. Z-score above 3 is used to detect outlier.
+df_col['sales'].mask((df_col['z_score'] > 3), med, inplace=True)
+print('\nNew dataframe after ouliers are replaced with median. \n',df_col)
+
+# Remove column name 'z_score' 
+df_col.drop(['z_score'], axis = 1)
